@@ -1,0 +1,15 @@
+{
+  "name": "library-konverter",
+  "version": "1.0.0",
+  "module": "index.ts",
+  "scripts": {
+    "start": "bun run index.ts",
+    "tscheck": "bunx tsc --noEmit"
+  },
+  "dependencies": {
+    "node-id3": "^0.2.6"
+  },
+  "devDependencies": {
+    "bun-types": "latest"
+  }
+}
