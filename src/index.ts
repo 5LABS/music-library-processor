@@ -1,8 +1,6 @@
-import { Logger } from "@/logger";
-import { UI } from "@/ui";
+import { logger } from "@/logger";
+import { ui } from "@/ui";
 import { InitWorkerManger } from "@/worker/worker_manager";
-const ui = new UI();
-const logger = new Logger("error.log");
 
 function calculateWorkers() {
     const cpuCount = navigator.hardwareConcurrency; // Bun-API, gibt logische Kerne zurück

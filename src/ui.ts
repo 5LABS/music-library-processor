@@ -5,7 +5,7 @@ const CYAN = "\x1B[36m";
 const DIM = "\x1B[2m";
 const CLEAR_LINE = "\x1B[2K\r";
 
-export class UI {
+class UI {
   print(msg: string): void {
     process.stdout.write(`${msg}\n`);
   }
@@ -60,3 +60,5 @@ export class UI {
     return `${"█".repeat(filled)}${"░".repeat(width - filled)}`;
   }
 }
+
+export const ui = new UI();

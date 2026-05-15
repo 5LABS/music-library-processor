@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "module": "index.ts",
   "scripts": {
-    "start": "bun run index.ts",
+    "start": "bun run ./src/index.ts",
     "tscheck": "bunx tsc --noEmit"
   },
   "dependencies": {

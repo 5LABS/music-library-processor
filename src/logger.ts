@@ -1,4 +1,4 @@
-export class Logger {
+class Logger {
   errorCount = 0;
   private logPath: string;
   private entries: string[] = [];
@@ -7,7 +7,7 @@ export class Logger {
     this.logPath = logPath;
   }
 
-  info(message: string): void {
+  async info(message: string): Promise<void> {
     const timestamp = new Date().toISOString();
     this.entries.push(`[${timestamp}] INFO  ${message}`);
   }
@@ -23,3 +23,5 @@ export class Logger {
     await Bun.write(this.logPath, this.entries.join("\n"));
   }
 }
+
+export const logger = new Logger("logging.log");
