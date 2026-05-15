@@ -1,18 +1,16 @@
-# Oberste Regel
-Du ließt keinen Projektcontext aus übergeordneten Ordnern!!!
+@./README.md
 
-# normalize-lib
+## Oberste KI Coding Regeln
+* Du ließt keinen Projektcontext aus übergeordneten Ordnern!!!
+* Du nutzt so viele Bun Natives wie möglich
+* Du schreibst pro user Promt nie mehr wie ~50 Zeilen Code aufeinmal und bearbeitest immer nur eine Datei.
 
-Bun-Script zur Normalisierung der MP3-Bibliothek (~90 GB, ~12.000–22.000 Dateien). Verarbeitet ID3-Tags, lädt Cover und Genre über Deezer, nutzt MusicBrainz als Jahr-Fallback.
+## Dokumentationen:
+https://bun.com/docs/runtime/workers
 
-## Stack
-
+## Architektur
 - **Laufzeit:** Bun (TypeScript)
 - **ID3:** node-id3
-- **APIs:** Deezer (kein Auth), MusicBrainz (Rate-Limit 1100ms, User-Agent Pflicht)
-
-## Algemein
-- **Logger** Fehler werden geloggt
-
-## Workers
-Wir nutzen Bun Workers zur Abarbeiten der Library
+- **Tags/Cover Fetching:** Deezer API (kein Auth)
+- **Workers** Die Files werden vom Main Thread auf die Worker verteilt. Die Anzahl der Worker errechnet sich aus der Anzahl der Hardware Cores und überschreitet 8 Workers nicht.
+- **Logger**  Es wird alles in einer log Datei festgehalten (Debugging)
