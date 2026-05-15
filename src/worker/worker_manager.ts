@@ -1,9 +1,8 @@
 import { Logger } from "@/logger";
-import { UI } from "@/ui";
+import { ui } from "@/ui";
 import { WorkerManager } from "./worker_manger_class";
 
 export async function InitWorkerManger(workerCount: number, musicPath: string) {
-    const ui = new UI();
     const logger = new Logger("error.log");
 
     const files: string[] = [];
@@ -29,6 +28,10 @@ export async function InitWorkerManger(workerCount: number, musicPath: string) {
         (filePath, errMsg) => {
             logger.error(filePath, new Error(errMsg));
             ui.updateError(0, files.length, filePath, startTime);
+        },
+        (level, message) => {
+            if (level === "error") logger.error(message, new Error(message));
+            else logger.info(message);
         }
     );
 

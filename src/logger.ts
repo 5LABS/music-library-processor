@@ -1,4 +1,4 @@
-class Logger {
+export class Logger {
   errorCount = 0;
   private logPath: string;
   private entries: string[] = [];

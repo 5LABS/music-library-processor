@@ -1,13 +1,4 @@
-
-type MainToWorker =
-    | { type: "JOB"; jobId: number; filePath: string }
-    | { type: "SHUTDOWN" };
-
-type WorkerToMain =
-    | { type: "READY" }
-    | { type: "DONE"; jobId: number; filePath: string; status: string }
-    | { type: "ERROR"; jobId: number; filePath: string; message: string }
-    | { type: "MB_REQUEST"; reqId: number; artist: string; title: string };
+import type { MainToWorker, WorkerToMain } from "@/worker/worker_types";
 
 export class WorkerManager {
     private workers: Worker[] = [];
@@ -17,18 +8,21 @@ export class WorkerManager {
     private total: number;
     private onProgress: (current: number, total: number, filePath: string) => void;
     private onError: (filePath: string, error: string) => void;
+    private onLog: (level: "info" | "error", message: string) => void;
     private resolve!: () => void;
 
     constructor(
         workerCount: number,
         files: string[],
         onProgress: (current: number, total: number, filePath: string) => void,
-        onError: (filePath: string, error: string) => void
+        onError: (filePath: string, error: string) => void,
+        onLog: (level: "info" | "error", message: string) => void
     ) {
         this.queue = [...files];
         this.total = files.length;
         this.onProgress = onProgress;
         this.onError = onError;
+        this.onLog = onLog;
 
         for (let i = 0; i < workerCount; i++) {
             const w = new Worker(new URL("./worker_node.ts", import.meta.url));
@@ -68,6 +62,10 @@ export class WorkerManager {
                 this.active--;
                 this.onError(msg.filePath, msg.message);
                 this.dispatch(worker);
+                break;
+
+            case "LOG":
+                this.onLog(msg.level, msg.message);
                 break;
         }
     }
