@@ -2,7 +2,7 @@ import { logger } from "@/logger";
 import { ui } from "@/ui";
 import { InitWorkerManger } from "@/worker/worker_manager";
 import { StartMenuActionSelection } from "./menu/main_menu";
-import { askWithPrefill, calculateWorkers } from "./utilis";
+import { promtWithPrefill, calculateWorkers } from "./utilis";
 
 async function main() {
 
@@ -23,7 +23,7 @@ async function main() {
     const musicPath = inputPath?.trim() || defaultPath;
     const workerCount = calculateWorkers();
     ui.print(`${ui.COLORS.GREEN}Wie viele Worker sollen gleichzeitig starten? ${ui.COLORS.DIM}`);
-    const inputWorker = Number(await askWithPrefill("Worker: ", String(workerCount)));
+    const inputWorker = Number(await promtWithPrefill("Worker: ", String(workerCount)));
 
 
     logger.info(`Final Worker Count: ${workerCount}`);

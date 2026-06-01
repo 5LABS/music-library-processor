@@ -1,7 +1,7 @@
 import { logger } from "@/logger";
 import * as readline from "readline";
 
-export function askWithPrefill(question: string, prefill: string): Promise<string> {
+export function promtWithPrefill(question: string, prefill: string): Promise<string> {
     return new Promise((resolve) => {
         const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
         rl.question(question, (answer) => { rl.close(); resolve(answer); });
