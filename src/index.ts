@@ -2,14 +2,7 @@ import { logger } from "@/logger";
 import { ui } from "@/ui";
 import { InitWorkerManger } from "@/worker/worker_manager";
 import { StartMenuActionSelection } from "./menu/main_menu";
-
-function calculateWorkers() {
-    const cpuCount = navigator.hardwareConcurrency; // Bun-API, gibt logische Kerne zurück
-    logger.info(`Dieser Pc hat: ${cpuCount} Kerne`);
-    const maxWorkers = Math.max(cpuCount, 2)
-    const minWorkers = Math.min(maxWorkers, 8);
-    return minWorkers; // Automatisch: 2 bis 8, abhängig von der CPU
-}
+import { askWithPrefill, calculateWorkers } from "./utilis";
 
 async function main() {
 
@@ -30,7 +23,7 @@ async function main() {
     const musicPath = inputPath?.trim() || defaultPath;
     const workerCount = calculateWorkers();
     ui.print(`${ui.COLORS.GREEN}Wie viele Worker sollen gleichzeitig starten? ${ui.COLORS.DIM}`);
-    const inputWorker = Number(prompt("Worker:"));
+    const inputWorker = Number(await askWithPrefill("Worker: ", String(workerCount)));
 
 
     logger.info(`Final Worker Count: ${workerCount}`);
