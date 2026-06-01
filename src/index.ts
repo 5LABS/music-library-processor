@@ -1,6 +1,7 @@
 import { logger } from "@/logger";
 import { ui } from "@/ui";
 import { InitWorkerManger } from "@/worker/worker_manager";
+import { StartMenuActionSelection } from "./menu/main_menu";
 
 function calculateWorkers() {
     const cpuCount = navigator.hardwareConcurrency; // Bun-API, gibt logische Kerne zurück
@@ -12,22 +13,32 @@ function calculateWorkers() {
 
 async function main() {
 
-   
-
+    ui.print(ui.COLORS.PINK + `
+███╗   ███╗██╗   ██╗███████╗██╗ ██████╗    ███╗   ███╗ █████╗ ███╗   ██╗ █████╗  ██████╗ ███████╗██████╗
+████╗ ████║██║   ██║██╔════╝██║██╔════╝    ████╗ ████║██╔══██╗████╗  ██║██╔══██╗██╔════╝ ██╔════╝██╔══██╗
+██╔████╔██║██║   ██║███████╗██║██║         ██╔████╔██║███████║██╔██╗ ██║███████║██║  ███╗█████╗  ██████╔╝
+██║╚██╔╝██║██║   ██║╚════██║██║██║         ██║╚██╔╝██║██╔══██║██║╚██╗██║██╔══██║██║   ██║██╔══╝  ██╔══██╗
+██║ ╚═╝ ██║╚██████╔╝███████║██║╚██████╗    ██║ ╚═╝ ██║██║  ██║██║ ╚████║██║  ██║╚██████╔╝███████╗██║  ██║
+╚═╝     ╚═╝ ╚═════╝ ╚══════╝╚═╝ ╚═════╝    ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝
+    `);
+    ui.print(ui.COLORS.BOLD + ui.COLORS.PINK + "Willkommen zum Music Library Manager!\n");
 
     const defaultPath = process.env.MUSIC_PATH ?? "./music";
-    ui.print("Gebe einen Pfad zur Musikbibliothek ein. \nKeine Eingabe = " + defaultPath + " (.env)");
+    ui.print(`${ui.COLORS.GREEN}Wo liegen die Musikdaten? ${ui.COLORS.DIM}Keine Eingabe = ${defaultPath} (.env)`);
+
     const inputPath = prompt(`Neuer Pfad:`);
     const musicPath = inputPath?.trim() || defaultPath;
-
-    ui.print("Wie viele Worker sollen gleichzeitig starten? (leer für Automatisch)");
+    const workerCount = calculateWorkers();
+    ui.print(`${ui.COLORS.GREEN}Wie viele Worker sollen gleichzeitig starten? ${ui.COLORS.DIM}`);
     const inputWorker = Number(prompt("Worker:"));
 
-    const workerCount = inputWorker || calculateWorkers();
+
     logger.info(`Final Worker Count: ${workerCount}`);
     ui.print(`Start Verarbeitung mit ${workerCount} Workers im Pfad ${musicPath}`);
     logger.info(`Start Verarbeitung mit ${workerCount} Workers im Pfad ${musicPath}`);
-    InitWorkerManger(workerCount, musicPath);
+
+    await StartMenuActionSelection();
+    // InitWorkerManger(workerCount, musicPath);
 }
 
 main()

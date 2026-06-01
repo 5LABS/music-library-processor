@@ -1,18 +1,15 @@
 import { ui } from "@/ui";
+import { selectMenu } from "@/menu/select_menu";
+import type { SelectOption } from "@/menu/select_menu";
 
-function menuSelectAction() {
-     ui.print(`
-███╗   ███╗██╗   ██╗███████╗██╗ ██████╗    ███╗   ███╗ █████╗ ███╗   ██╗ █████╗  ██████╗ ███████╗██████╗     
-████╗ ████║██║   ██║██╔════╝██║██╔════╝    ████╗ ████║██╔══██╗████╗  ██║██╔══██╗██╔════╝ ██╔════╝██╔══██╗    
-██╔████╔██║██║   ██║███████╗██║██║         ██╔████╔██║███████║██╔██╗ ██║███████║██║  ███╗█████╗  ██████╔╝    
-██║╚██╔╝██║██║   ██║╚════██║██║██║         ██║╚██╔╝██║██╔══██║██║╚██╗██║██╔══██║██║   ██║██╔══╝  ██╔══██╗    
-██║ ╚═╝ ██║╚██████╔╝███████║██║╚██████╗    ██║ ╚═╝ ██║██║  ██║██║ ╚████║██║  ██║╚██████╔╝███████╗██║  ██║    
-╚═╝     ╚═╝ ╚═════╝ ╚══════╝╚═╝ ╚═════╝    ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝    
-            `);
+export const MENU_OPTIONS = [
+    { label: "Low Quality Dateien finden" },
+    { label: "ID3 Tags normalisieren" },
+    { label: "Beenden" },
+] satisfies SelectOption[];
 
-    ui.print("Willkommen zum Music Metadata Manager!");
-    ui.print("Wähle eine Option:");
-    ui.print("1. Low Quallity Datein finden");
-    ui.print("2. ID3 Tags normalisieren");
-    ui.print("3. Beenden");
+export async function StartMenuActionSelection(): Promise<SelectOption> {
+
+    ui.print(ui.COLORS.GREEN + "\nWas möchtest du tun?");
+    return selectMenu.show(MENU_OPTIONS);
 }

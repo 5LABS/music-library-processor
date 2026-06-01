@@ -6,4 +6,9 @@ Bun-Script zur Normalisierung einer großen MP3-Bibliothek mit mehr wie ~15000 F
 * Tags normalisieren
 
 ## Target
-Einheitliche Library zur nutzung in Navidrome
+Normalisierte Library zur nutzung in Navidrome
+
+## Programm starten
+```
+bun ./src/index.ts
+```
