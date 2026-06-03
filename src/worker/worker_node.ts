@@ -1,8 +1,16 @@
-import type { MainToWorker, WorkerToMain } from "@/worker/worker_types";
-import { processFile } from "@/processor";
+import type { JobType, MainToWorker, WorkerToMain } from "@/worker/worker_types";
+import { normalizeJob } from "@/id3-normalizar/processor";
+import { lowQualityJob } from "@/low-quality/checker";
 
 // Bun Worker-Kontext: self ist der globale Worker-Scope
 // const workerSelf = self as unknown as { close(): void };
+
+// Handler-Registry: bildet jeden Job-Typ auf seine Verarbeitungsfunktion ab.
+// Neuer Job = ein Eintrag hier (+ JobType in worker_types.ts + Menüpunkt).
+const handlers: Record<JobType, (filePath: string) => Promise<string>> = {
+    normalize_id3_tags: normalizeJob,
+    find_low_quality_files: lowQualityJob,
+};
 
 function postLog(level: "info" | "error", message: string) {
     postMessage({ type: "LOG", level, message } satisfies WorkerToMain);
@@ -17,12 +25,12 @@ onmessage = async (event: MessageEvent<MainToWorker>) => {
     switch (msg.type) {
         case "JOB":
             try {
-                await processFile(msg.filePath);
+                const status = await handlers[msg.jobType](msg.filePath);
                 postMessage({
                     type: "DONE",
                     jobId: msg.jobId,
                     filePath: msg.filePath,
-                    status: "ok",
+                    status,
                 } satisfies WorkerToMain);
             } catch (err: any) {
                 postMessage({

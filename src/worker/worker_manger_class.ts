@@ -1,4 +1,4 @@
-import type { MainToWorker, WorkerToMain } from "@/worker/worker_types";
+import type { JobType, MainToWorker, WorkerToMain } from "@/worker/worker_types";
 
 export class WorkerManager {
     private workers: Worker[] = [];
@@ -6,7 +6,8 @@ export class WorkerManager {
     private active = 0;
     private done = 0;
     private total: number;
-    private onProgress: (current: number, total: number, filePath: string) => void;
+    private jobType: JobType;
+    private onProgress: (current: number, total: number, filePath: string, status: string) => void;
     private onError: (filePath: string, error: string) => void;
     private onLog: (level: "info" | "error", message: string) => void;
     private resolve!: () => void;
@@ -14,12 +15,14 @@ export class WorkerManager {
     constructor(
         workerCount: number,
         files: string[],
-        onProgress: (current: number, total: number, filePath: string) => void,
+        jobType: JobType,
+        onProgress: (current: number, total: number, filePath: string, status: string) => void,
         onError: (filePath: string, error: string) => void,
         onLog: (level: "info" | "error", message: string) => void
     ) {
         this.queue = [...files];
         this.total = files.length;
+        this.jobType = jobType;
         this.onProgress = onProgress;
         this.onError = onError;
         this.onLog = onLog;
@@ -53,7 +56,7 @@ export class WorkerManager {
             case "DONE":
                 this.done++;
                 this.active--;
-                this.onProgress(this.done, this.total, msg.filePath);
+                this.onProgress(this.done, this.total, msg.filePath, msg.status);
                 this.dispatch(worker);
                 break;
 
@@ -80,7 +83,7 @@ export class WorkerManager {
         const filePath = this.queue.shift()!;
         const jobId = this.total - this.queue.length;
         this.active++;
-        worker.postMessage({ type: "JOB", jobId, filePath } satisfies MainToWorker);
+        worker.postMessage({ type: "JOB", jobId, filePath, jobType: this.jobType } satisfies MainToWorker);
     }
 
     private checkDone() {

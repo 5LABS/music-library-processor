@@ -1,6 +1,10 @@
 
+// Job-Typen entsprechen exakt den Menü-IDs (main_menu.ts).
+// Neuer Job = neuer String hier + Handler in worker_node.ts + Menüpunkt.
+export type JobType = "normalize_id3_tags" | "find_low_quality_files";
+
 export type MainToWorker =
-    | { type: "JOB"; jobId: number; filePath: string }
+    | { type: "JOB"; jobId: number; filePath: string; jobType: JobType }
     | { type: "SHUTDOWN" };
 
 export type WorkerToMain =

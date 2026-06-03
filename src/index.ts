@@ -33,10 +33,10 @@ import { promtWithPrefill, calculateWorkers } from "@/utilis/functions";
 
     switch (result) {
         case "find_low_quality_files":
-            logger.info("User selected: Find Low Quality Files");
-            break;
         case "normalize_id3_tags":
-            logger.info("User selected: Normalize ID3 Tags");
+            // result ist exakt ein JobType-String → direkt durchreichen.
+            logger.info(`User selected: ${result}`);
+            await InitWorkerManger(workerCount, musicPath, result);
             break;
         case "exit":
             await logger.info("User selected: Exit");
@@ -45,7 +45,5 @@ import { promtWithPrefill, calculateWorkers } from "@/utilis/functions";
         default:
             logger.warn(`Unknown menu option selected: ${result}`);
     }
-
-    // InitWorkerManger(workerCount, musicPath);
 })();
 
