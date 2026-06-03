@@ -1,11 +1,12 @@
-import { ui } from "@/ui";
+import { ui } from "@/utilis/ui";
 
 export interface SelectOption {
     label: string;
+    id: string;
 }
 
 class SelectMenu {
-    async show<T extends SelectOption>(options: T[]): Promise<T> {
+    async show<T extends SelectOption>(options: T[]): Promise<string> {
         let selected = 0;
         let firstRender = true;
 
@@ -31,13 +32,19 @@ class SelectMenu {
 
                 if (key === "\x1B[A") selected = Math.max(0, selected - 1);
                 else if (key === "\x1B[B") selected = Math.min(options.length - 1, selected + 1);
-                else if (key === "\x03") { process.stdin.setRawMode(false); process.exit(); }
+                else if (key === "\x03") {
+                    process.stdin.removeListener("data", onData);
+                    process.stdin.setRawMode(false);
+                    process.stdin.pause();
+                    resolve("exit");
+                    return;
+                }
                 else if (key === "\r" || key === "\n") {
                     process.stdin.removeListener("data", onData);
                     process.stdin.setRawMode(false);
                     process.stdin.pause();
                     process.stdout.write("\n");
-                    resolve(options[selected]);
+                    resolve(options[selected].id);
                     return;
                 }
 

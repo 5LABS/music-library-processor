@@ -18,6 +18,11 @@ export class Logger {
     this.entries.push(`[${timestamp}] ERROR ${file}\n  ${err.message}\n`);
   }
 
+  async warn(message: string): Promise<void> {
+    const timestamp = new Date().toISOString();
+    this.entries.push(`[${timestamp}] INFO  ${message}`);
+  }
+
   async close(): Promise<void> {
     if (this.entries.length === 0) return;
     await Bun.write(this.logPath, this.entries.join("\n"));

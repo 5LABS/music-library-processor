@@ -1,10 +1,10 @@
-import { logger } from "@/logger";
-import { ui } from "@/ui";
+import { logger } from "@/utilis/logger";
+import { ui } from "@/utilis/ui";
 import { InitWorkerManger } from "@/worker/worker_manager";
 import { StartMenuActionSelection } from "./menu/main_menu";
-import { promtWithPrefill, calculateWorkers } from "./utilis";
+import { promtWithPrefill, calculateWorkers } from "@/utilis/functions";
 
-async function main() {
+(async function main() {
 
     ui.print(ui.COLORS.PINK + `
 ███╗   ███╗██╗   ██╗███████╗██╗ ██████╗    ███╗   ███╗ █████╗ ███╗   ██╗ █████╗  ██████╗ ███████╗██████╗
@@ -28,10 +28,24 @@ async function main() {
 
     logger.info(`Final Worker Count: ${workerCount}`);
     ui.print(`Start Verarbeitung mit ${workerCount} Workers im Pfad ${musicPath}`);
-    logger.info(`Start Verarbeitung mit ${workerCount} Workers im Pfad ${musicPath}`);
+        
+    const result = await StartMenuActionSelection();
 
-    await StartMenuActionSelection();
+    switch (result) {
+        case "find_low_quality_files":
+            logger.info("User selected: Find Low Quality Files");
+            break;
+        case "normalize_id3_tags":
+            logger.info("User selected: Normalize ID3 Tags");
+            break;
+        case "exit":
+            await logger.info("User selected: Exit");
+            await logger.close();
+            process.exit(0);
+        default:
+            logger.warn(`Unknown menu option selected: ${result}`);
+    }
+
     // InitWorkerManger(workerCount, musicPath);
-}
+})();
 
-main()

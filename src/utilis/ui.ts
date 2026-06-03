@@ -17,10 +17,6 @@ class UI {
         process.stdout.write(`${msg}\n` + this.COLORS.RESET);
     }
 
-    init(total: number): void {
-        process.stdout.write(`\n${this.COLORS.CYAN}Verarbeite ${total} Dateien...${this.COLORS.RESET}\n\n`);
-    }
-
     update(current: number, total: number, filename: string, status = "", startTime?: number): void {
         const percent = Math.floor((current / total) * 100);
         const bar = this.progressBar(percent);

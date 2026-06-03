@@ -1,26 +1,14 @@
-import { Logger } from "@/logger";
-import { ui } from "@/ui";
+import { Logger } from "@/utilis/logger";
+import { ui } from "@/utilis/ui";
 import { WorkerManager } from "./worker_manger_class";
+import { searchFiles } from "@/utilis/functions";
 
 export async function InitWorkerManger(workerCount: number, musicPath: string) {
     const logger = new Logger("error.log");
 
-    const files: string[] = [];
-    for (const pattern of ["**/*.mp3", "**/*.MP3"]) {
-        const glob = new Bun.Glob(pattern);
-        for await (const file of glob.scan({ cwd: musicPath, absolute: true })) {
-            files.push(file);
-        }
-    }
-
-    if (files.length === 0) {
-        ui.print("Keine MP3-Dateien gefunden.");
-        return;
-    }
+    const files = await searchFiles(musicPath)
 
     const startTime = Date.now();
-    ui.init(files.length);
-
     const manager = new WorkerManager(
         workerCount,
         files,
